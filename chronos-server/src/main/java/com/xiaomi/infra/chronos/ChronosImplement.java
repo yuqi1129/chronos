@@ -45,6 +45,8 @@ public class ChronosImplement implements ChronosService.Iface {
    * @return timestamp, the first available timestamp to client
    */
   public long getTimestamps(int range) throws TException {
+    LOG.info("Start get unique point...");
+
 
     // can get 2^18(262144) times for each millisecond for about 1115 years
     long currentTime = System.currentTimeMillis() << 18;
@@ -93,7 +95,12 @@ public class ChronosImplement implements ChronosService.Iface {
       }
 
       // return the first available timestamp
-      return maxAssignedTimestamp - range + 1;
+      long res = maxAssignedTimestamp - range + 1;
+      if (LOG.isDebugEnabled()) {
+        LOG.debug(String.format("Current unique timestamp is: %s", res));
+      }
+
+      return res;
     }
   }
 
@@ -103,6 +110,7 @@ public class ChronosImplement implements ChronosService.Iface {
    * @return the allocated timestamp
    * @throws TException when error to response thrift request
    */
+  @Override
   public long getTimestamp() throws TException {
     return getTimestamps(1);
   }
